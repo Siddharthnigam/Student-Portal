@@ -1,24 +1,20 @@
-from rest_framework import viewsets
+from rest_framework import generics, permissions
+from .models import CustomUser
+from .serializers import RegisterSerializer, UserSerializer
 from rest_framework.response import Response
-from rest_framework.decorators import action
-from .models import Course, User
-from .serializers import CourseSerializer, UserSerializer
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class RegisterView(generics.CreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = RegisterSerializer
+    permission_classes = [permissions.AllowAny]
 
-class CourseViewSet(viewsets.ModelViewSet):
-    queryset = Course.objects.all()
-    serializer_class = CourseSerializer
+class ProfileView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
-    @action(detail=True, methods=['get'])
-    def faculty_courses(self, request, pk=None):
-        """Retrieve courses created by a specific faculty member"""
-        try:
-            faculty = User.objects.get(pk=pk, role='faculty')
-            courses = Course.objects.filter(faculty=faculty)
-            serializer = CourseSerializer(courses, many=True)
-            return Response(serializer.data)
-        except User.DoesNotExist:
-            return Response({'error': 'Faculty not found'}, status=400)
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)
