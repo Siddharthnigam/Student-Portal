@@ -1,55 +1,80 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { AuthContext } from "../AuthContext";
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { logout } = useContext(AuthContext);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
+    const studentId = localStorage.getItem("student_id");
 
-      if (!token) {
-        console.error("No token found, user must be logged in.");
-        navigate("/login"); // Redirect to login if no token
-        return;
-      }
+    if (!token || !studentId) {
+      console.error("❌ Missing token or student ID.");
+      logout();
+      navigate("/login");
+      return;
+    }
 
+    const fetchUserData = async () => {
       try {
-        const res = await axios.get("http://127.0.0.1:8000/profile/", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(res.data);
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/students/${studentId}/`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setUserData(response.data);
       } catch (error) {
-        console.error("Error fetching profile:", error);
-        navigate("/login"); // Redirect to login if error occurs
-      } finally {
-        setLoading(false); // Ensure loading state ends
+        console.error("❌ Error fetching profile data:", error);
+        logout();
+        navigate("/login");
       }
     };
 
-    fetchProfile();
-  }, [navigate]);
+    fetchUserData();
+  }, [logout, navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Remove token from local storage
-    navigate("/login"); // Redirect to login after logout
-  };
-
-  if (loading) return <p>Loading...</p>; // Prevent infinite loading
+  if (!userData) return <p className="text-center mt-10 text-gray-600">Loading profile...</p>;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h2 className="text-3xl font-bold mb-6">Profile</h2>
-      <div className="bg-white p-6 rounded shadow-md w-80">
-        <p><strong>Username:</strong> {user?.username}</p>
-        <p><strong>Email:</strong> {user?.email}</p>
-        <p><strong>Role:</strong> {user?.role}</p>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
+      <div className="bg-white w-full max-w-md rounded-lg shadow p-6 text-center space-y-4">
+        <h2 className="text-2xl font-bold text-indigo-800">👤 Student Profile</h2>
+
+        {userData.profile_image && (
+          <img
+            src={userData.profile_image}
+            alt="Profile"
+            className="h-20 w-20 mx-auto rounded-full border object-cover"
+          />
+        )}
+
+        <p className="text-gray-700 text-sm">
+          <strong>Username:</strong> {userData.username}
+        </p>
+        <p className="text-gray-700 text-sm">
+          <strong>Email:</strong> {userData.email}
+        </p>
+        <p className="text-gray-700 text-sm">
+          <strong>Enrollment #:</strong> {userData.enrollment_number}
+        </p>
+        <p className="text-gray-700 text-sm">
+          <strong>Phone:</strong> {userData.phone || "N/A"}
+        </p>
+        <p className="text-gray-700 text-sm">
+          <strong>Address:</strong> {userData.address || "N/A"}
+        </p>
+
         <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded mt-4"
+          onClick={() => {
+            logout();
+            navigate("/login");
+          }}
+          className="mt-4 bg-red-500 text-white text-sm px-6 py-2 rounded hover:bg-red-600 transition"
         >
           Logout
         </button>

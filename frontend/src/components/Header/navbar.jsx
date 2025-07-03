@@ -1,43 +1,63 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../AuthContext";
+import Logo from '../img/miraclelogo.png'
 
 const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, userRole, authLoaded } = useContext(AuthContext);
 
-  useEffect(() => {
-    // Check if the user is logged in (token exists)
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token); // Convert token existence to boolean
-  }, []);
+  if (!authLoaded) return null; // ✅ Prevent UI flashing before auth state loads
 
   return (
-    <nav className="flex items-center justify-between p-4 bg-white">
-      {/* Logo and Name */}
-      <div className="flex items-center">
-        <div className="bg-green-500 ml-10 rounded-full p-4"></div>
-        <span className="ml-2 text-gray-800 text-4xl font-bold">Miracle IT</span>
+    <nav className="bg-white shadow-md">
+      {/* Top Section */}
+      <div className="flex items-center justify-between px-3 pb-3">
+        {/* Placeholder for additional content if needed */}
       </div>
 
-      {/* Menu Links */}
-      <div className="flex gap-10 font-bold text-[1rem] space-x-4">
-        <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
-        <Link to="/services" className="text-gray-600 hover:text-gray-900">Services</Link>
-        <Link to="/courses" className="text-gray-600 hover:text-gray-900">Courses</Link>
-        <Link to="/about" className="text-gray-600 hover:text-gray-900">About Me</Link>
-        <Link to="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
-      </div>
+      {/* Bottom Section */}
+      <div className="flex items-center justify-between p-4 px-4 text-black">
+      
+       <div className="flex items-center">
+  <img
+    src={Logo}
+    alt="Miracle IT Logo"
+    className="w-44 h-18 ml-4  object-cover"
+  />
+</div>
 
-      {/* CTA Button (Register → Profile) */}
-      <div className="bg-green-500 px-4 rounded-2xl py-2">
-        {isAuthenticated ? (
-          <Link to="/profile">
-            <button className="bg-black rounded-2xl text-white py-2 px-4">Profile</button>
-          </Link>
-        ) : (
-          <Link to="/register">
-            <button className="bg-black rounded-2xl text-white py-2 px-4">Register</button>
-          </Link>
-        )}
+        <div className="flex-grow mx-6">
+          <input
+            type="text"
+            placeholder="Search for Colleges, Exams, Courses and More.."
+            className="w-full px-4 py-2 rounded bg-gray-200 text-black"
+          />
+        </div>
+
+        <div className="flex gap-10 font-bold text-[1rem] px-8 text-lg">
+          <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
+          <Link to="/services" className="text-gray-600 hover:text-gray-900">Explore</Link>
+          <Link to="/courseList" className="text-gray-600 hover:text-gray-900">Courses</Link>
+          <Link to="/about" className="text-gray-600 hover:text-gray-900">About</Link>
+          <Link to="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
+
+          {/* 🔥 Dashboard Link Based on Role */}
+          {isAuthenticated && userRole === "admin" && <Link to="/admin-dashboard">Dashboard</Link>}
+          {isAuthenticated && userRole === "faculty" && <Link to="/faculty-dashboard">Dashboard</Link>}
+          {isAuthenticated && userRole === "student" && <Link to="/student-dashboard">Dashboard</Link>}
+        </div>
+
+        <div className="bg-green-500 px-4 rounded-2xl py-2">
+          {isAuthenticated ? (
+            <Link to="/profile">
+              <button className="bg-black rounded-2xl text-white py-2 px-4">Profile</button>
+            </Link>
+          ) : (
+            <Link to="/login">
+              <button className="bg-black rounded-2xl text-white py-2 px-4">Login</button>
+            </Link>
+          )}
+        </div>
       </div>
     </nav>
   );

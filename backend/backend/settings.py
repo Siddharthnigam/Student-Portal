@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'student',
+    'feature',
     'rest_framework',
     'corsheaders',
     'django.contrib.admin',
@@ -79,7 +80,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'capstone',
+        'NAME': 'miracle',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
@@ -145,3 +146,9 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+import os  # ✅ Add this at the beginning of settings.py
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+

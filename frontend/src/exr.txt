@@ -1,0 +1,45 @@
+import React, { useContext } from "react";
+import { Link } from "react-router-dom";
+import { AuthContext } from "../AuthContext";
+
+const Navbar = () => {
+  const { isAuthenticated, userRole, authLoaded } = useContext(AuthContext);
+
+  if (!authLoaded) return null; // ✅ Prevent UI flashing before auth state loads
+
+  return (
+    <nav className="flex items-center justify-between p-4 bg-white shadow-md">
+      <div className="flex items-center">
+        <div className="bg-green-500 ml-4 rounded-full p-4"></div>
+        <span className="ml-2 text-gray-800 text-4xl font-bold">Miracle IT</span>
+      </div>
+
+      <div className="flex gap-6 font-bold text-lg">
+        <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
+        <Link to="/services" className="text-gray-600 hover:text-gray-900">Services</Link>
+        <Link to="/courses" className="text-gray-600 hover:text-gray-900">Courses</Link>
+        <Link to="/about" className="text-gray-600 hover:text-gray-900">About</Link>
+        <Link to="/contact" className="text-gray-600 hover:text-gray-900">Contact</Link>
+
+        {/* 🔥 Dashboard Link Based on Role */}
+        {isAuthenticated && userRole === "admin" && <Link to="/admin-dashboard">Dashboard</Link>}
+        {isAuthenticated && userRole === "faculty" && <Link to="/faculty-dashboard">Dashboard</Link>}
+        {isAuthenticated && userRole === "student" && <Link to="/student-dashboard">Dashboard</Link>}
+      </div>
+
+      <div className="bg-green-500 px-4 rounded-2xl py-2">
+        {isAuthenticated ? (
+          <Link to="/profile">
+            <button className="bg-black rounded-2xl text-white py-2 px-4">Profile</button>
+          </Link>
+        ) : (
+          <Link to="/login">
+            <button className="bg-black rounded-2xl text-white py-2 px-4">Login</button>
+          </Link>
+        )}
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;

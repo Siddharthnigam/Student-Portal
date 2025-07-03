@@ -1,47 +1,80 @@
 import React from 'react';
-import one from '../img/one.png'
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import one from '../img/one.png';
+import two from '../img/bg.png';
 
 const LandingPage = () => {
   return (
-    <div className="max-h-screen p-10  ">
-      <div className=" w-full flex pt-10 ">
-        
-        {/* Left Side - Text Content */}
-        <div className=" flex flex-col pt-10 pl-20 w-[60%] justify-center">
-          <h1 className="text-7xl space-x-6 font-bold text-gray-800">
-            Advanced <span className="text-green-600 ">Physics</span> with 
-            <span className="text-green-600"> Expert</span> Online Tutoring
-          </h1>
-          <p className="mt-4 text-gray-600">
-            He preference connection astonished on of ye. Partiality on or continuing in particular principles as. 
+    <motion.div
+      className="h-[70vh] flex items-center bg-white relative"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: 'easeOut' }}
+    >
+      <motion.img
+        src={two}
+        className="absolute z-0 w-screen h-[70vh] object-cover"
+        alt="Background"
+        initial={{ scale: 1.2, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 1 }}
+      />
+
+      <div className="relative w-full  flex pt-10 z-10">
+        <motion.div
+          className="flex flex-col pl-20 w-[60%] justify-center"
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
+          <motion.h1
+            className="text-5xl space-x-6 font-extrabold text-gray-900"
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: 'spring', stiffness: 100 }}
+          >
+            Launch Your <span className="text-blue-600">Tech Career</span> with
+            <span className="text-blue-600"> Miracle IT</span> Coaching Classes
+          </motion.h1>
+
+          <motion.p
+            className="mt-6 text-gray-700"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
+            He preference connection astonished on of ye. Partiality on or continuing in particular principles as. <br />
             Do believing oh disposing to supported allowance we.
-          </p>
-          <div className="mt-6 flex space-x-4">
-            <button className="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold">
-              Get Started Today
-            </button>
-            <button className="bg-white text-gray-700 border border-gray-300 px-6 py-3 rounded-lg font-semibold">
-              Learn More
-            </button>
-          </div>
-          <div className="mt-6 flex items-center space-x-4">
-            <img src="trustpilot.png" alt="Trustpilot Rating" className="w-20" />
-            <div className="flex space-x-2">
-              <img src="user1.png" alt="User 1" className="w-8 h-8 rounded-full" />
-              <img src="user2.png" alt="User 2" className="w-8 h-8 rounded-full" />
-              <img src="user3.png" alt="User 3" className="w-8 h-8 rounded-full" />
-              <span className="text-gray-600 text-sm">+9k learners</span>
-            </div>
-          </div>
-        </div>
+          </motion.p>
 
-        {/* Right Side - Image */}
-        <div className="hidden md:block w-[40%] justify-center items-center">
-          <img src={one} alt="Tutoring session" className="w-[80%]  object-cover rounded-lg" />
-        </div>
-
+          <motion.div
+            className="mt-6 flex space-x-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+          >
+            <Link to="/login">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+              >
+                Get Started Today
+              </motion.button>
+            </Link>
+            <Link to="/about">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="bg-white text-gray-700 border border-gray-300 px-6 py-3 rounded-lg font-semibold hover:bg-gray-200 transition"
+              >
+                Learn More
+              </motion.button>
+            </Link>
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
